@@ -56,7 +56,7 @@ upgrade:
 
 2. `modules`选项提供的是针对模块本身的编译，这可以用来做dynamic module或模块本身的调试，详见[官方文档](https://www.nginx.com/resources/wiki/extending/converting/#compiling-dynamic)；
 
-3. `upgrade`选项提供的是nginx自身版本的升级，这也适用于用deb安装的情况，不难发现，升级时可以通过发送`-USR2`信号给正在运行的nginx进程，nginx的master进程将会把现有的可执行文件重命名为`nginx.pid.oldbin`，随机我们可以安装并启动新版本的nginx，并通过`kill -WINCH $(cat /usr/local/nginx/logs/nginx.pid.oldbin)`、`kill -QUIT $(cat /usr/local/nginx/logs/nginx.pid.oldbin)`的方式平滑停止老版本nginx服务，这即是nginx官方提供的[平滑升级方案](http://nginx.org/en/docs/control.html#upgrade)。
+3. `upgrade`选项提供的是nginx自身版本的升级，这也适用于用deb安装的情况，不难发现，升级时可以通过发送`-USR2`信号给正在运行的nginx进程，nginx的master进程将会把现有的PID文件重命名为`nginx.pid.oldbin`，然后尝试新启动一个nginx服务（这时候假设已经更新了nginx的可执行文件且启动路径未变，因此启动的便是新版本的服务），并且可以通过`kill -WINCH $(cat /usr/local/nginx/logs/nginx.pid.oldbin)`、`kill -QUIT $(cat /usr/local/nginx/logs/nginx.pid.oldbin)`的方式平滑停止老版本nginx服务，这即是nginx官方提供的[平滑升级方案](http://nginx.org/en/docs/control.html#upgrade)。
 
 回过头来，上文也提到build/install背后是`objs/Makefile`，简单列出`objs`下的目录结构：
 
